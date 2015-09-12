@@ -48,11 +48,16 @@ module.exports = ScorePanel;
 
 var ScorePanel = React.createClass({
 
+  propTypes: {
+    title: React.PropTypes.string,
+    url: React.PropTypes.string,
+  },
+
   render() {
     return (
       <div className="score-panel">
         <div className="wrapper">
-          <TopicPanel title="Forks" url="https://www.wikipedia.com/forks"/>
+          <TopicPanel title={this.props.title} url={this.props.url}/>
           <MoveCounter />
           <TopicPanel title="Forks" url="https://www.wikipedia.com/forks" isRight={true}/>
         </div>
