@@ -1,4 +1,12 @@
-.test {
-  color: green;
-  background: #000;
+/* Normalize Styles */
+body {
+  padding: 0;
+  margin: 0;
+}
+
+/* App Styles */
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }

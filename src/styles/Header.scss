@@ -1,0 +1,35 @@
+.header {
+  background-color: #a7d7f9;
+  width: 100%;
+
+  .header-wrap {
+    max-width: 980px;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    text-align: center;
+    line-height: 50px;
+
+    .logo {
+      border-radius: 50%;
+      background-color: #fff;
+      border: #56A5DD solid 2px;
+      color: #56A5DD;
+      width: 50px;
+      height: 50px;
+      i.wiki {
+        &:before {
+          font-family: Times New Roman,Times,serif;
+          font-weight: 400;
+          font-style: normal;
+          font-size: 30px;
+          content: "VV";
+          letter-spacing: -.45em;
+          margin-right: .5em;
+        }
+      }
+    }
+  }
+}

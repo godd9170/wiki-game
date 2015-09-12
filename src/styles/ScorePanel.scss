@@ -1,0 +1,51 @@
+.score-panel {
+  background: #56A5DD;
+  width: 100%;
+  font-family: "Linux Libertine",Georgia,Times,serif;
+
+  .wrapper {
+    max-width: 980px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+
+    .topic {
+      flex: 1;
+
+      &.right {
+        text-align: right;
+      }
+      .topic-title {
+        font-size: 25px;
+        color: #fff;
+      }
+      .topic-url {
+        font-size: 12px;
+        color: #fff;
+        cursor: pointer;
+
+        &:hover {
+          color: #DAEFFE;
+        }
+      }
+    }
+
+
+    .move-counter {
+      width: 10%;
+      text-align: center;
+
+      .moves {
+        font-size: 32px;
+        color: #fff;
+      }
+
+      .moves-title {
+        text-align: center;
+        display: inline-block;
+        color: #fff;
+      }
+    }
+  }
+}
