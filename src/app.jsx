@@ -2,11 +2,13 @@
 var React = require('react');
 var $ = require('jquery');
 var _ = require('lodash');
+var HtmlToReact = require('html-to-react');
 //components
 var Header = require('./components/Header');
 var ScorePanel = require('./components/ScorePanel');
 var ContentPanel = require('./components/ContentPanel');
 var Footer = require('./components/Footer');
+
 //styles
 require('./styles/app.scss');   //stylings for component
 
@@ -14,44 +16,46 @@ var App = React.createClass({
 
   getInitialState() {
     return {
-      url : null,
+      content : null,
       title : null,
+      moves : -1
     };
   },
 
   onRandomPageSuccess(resp) {
-    //Make HTML
-    var el = $( '<div></div>' );
-    el.html(resp);
 
-    //Get Title
-    var title = $('title', el)[0].innerText.split(' - Wikipedia, the free encyclopedia')[0];
-    //Get URL
-    var links = $('link', el);
-    var url = _.select(links, function (obj) {
-      return obj.rel === 'canonical';
-    })[0].href;
+    console.log(resp);
+    var title = resp.title;
 
-    // console.log("Title!: ", title);
-    // console.log("URL: ", url);
+    //create html div
+    var content = resp.html.replace(/(href)[^\s]*/g, 'class="wiki-link"'); //lose the hrefs
+    var div = '<div>';
+    var htmlToReactParser = new HtmlToReact.Parser(React);
+    content = htmlToReactParser.parse(div.concat(content.concat("</div>")));
+
     this.setState({
       title : title,
-      url : url
+      content : content
     });
   },
 
   onRandomPageError(resp) {
     console.log("ERROR: ", resp);
   },
+
+  onMove() {
+    var counter = this.state.moves++;
+    this.setState({
+      moves : counter,
+    });
+  },
  
   componentWillMount() {
-    var url = "http://cors.io/?u=https://en.wikipedia.org/wiki/Special:Random";
-    var header = {};
+    var url = "/article";
 
     $.ajax({
         url: url,
         method: 'GET',
-        headers: header,
         success: this.onRandomPageSuccess,
         error: this.onRandomPageError,
       });
@@ -65,8 +69,8 @@ var App = React.createClass({
     return (
       <div className="app">
         <Header />
-        <ScorePanel url={url} title={title}/>
-        <ContentPanel url={url}/>
+        <ScorePanel title={title} moves={this.state.moves}/>
+        <ContentPanel onMove={this.onMove} content={this.state.content} />
         <Footer />
       </div>
     );

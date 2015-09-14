@@ -5,7 +5,7 @@ var Footer = React.createClass({
 
   render() {
     return (
-      <div className="footer">Henry Goddard 2015</div>
+      <div className="footer"></div>
     );
   }
 

@@ -8,7 +8,7 @@ var MoveCounter = React.createClass({
 
     return (
       <div className="move-counter">
-        <div className="moves">10</div>
+        <div className="moves">{this.props.moves}</div>
         <div className="moves-title">Moves</div>
       </div>
     );
@@ -20,12 +20,7 @@ var TopicPanel = React.createClass({
 
   propTypes: {
     title: React.PropTypes.string,
-    url: React.PropTypes.string,
     isRight: React.PropTypes.bool /* justify right if right topic */
-  },
-
-  openUrl() {
-    window.open(this.props.url,'_blank');
   },
 
   render() {
@@ -37,7 +32,6 @@ var TopicPanel = React.createClass({
     return (
       <div className={topicClasses}>
         <div className="topic-title">{this.props.title}</div>
-        <div onClick={this.openUrl} className="topic-url">{this.props.url}</div>
       </div>
     );
   }
@@ -50,16 +44,16 @@ var ScorePanel = React.createClass({
 
   propTypes: {
     title: React.PropTypes.string,
-    url: React.PropTypes.string,
+    moves: React.PropTypes.number
   },
 
   render() {
     return (
       <div className="score-panel">
         <div className="wrapper">
-          <TopicPanel title={this.props.title} url={this.props.url}/>
-          <MoveCounter />
-          <TopicPanel title="Forks" url="https://www.wikipedia.com/forks" isRight={true}/>
+          <TopicPanel title={this.props.title}/>
+          <MoveCounter moves={this.props.moves}/>
+          <TopicPanel title="Forks" isRight={true}/>
         </div>
       </div>
     );

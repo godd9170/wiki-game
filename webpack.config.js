@@ -89,7 +89,8 @@ var loaders = [
     'style!' + (IS_PROD ? 'css' : 'css?localIdentName=[name]--[local]--[hash:base64:5]') + '!autoprefixer'
   },
   { test: /\.jsx?$/, exclude: /node_modules/, loader: 'babel' },
-  { test: /\.scss$/, loader: 'style!css!autoprefixer!sass' }
+  { test: /\.scss$/, loader: 'style!css!autoprefixer!sass' },
+  { test: /\.json$/, loader: 'json-loader' }
 ];
 
 if (HOT_LOAD) {
@@ -116,6 +117,11 @@ module.exports = {
   module: {
     preLoaders: preLoaders,
     loaders: loaders,
+  },
+  node: {
+    fs: "empty",
+    net: "empty",
+    tls: "empty"
   },
   resolve: {
     alias: {
