@@ -57,27 +57,27 @@ var ContentPanel = React.createClass({
       let matches = section.content.match(bracketReg) || [];
       section.content = section.content.replace(bracketReg, "<BREAK>");
       let notMatches = section.content.split("<BREAK>") || [];
-      console.log("notmatches: ", notMatches);
 
       result.push(<span className="run">{notMatches.splice(0, 1)[0]}</span>);
       var i = 0;
       matches.forEach(match => {
+        var match = match.replace("[","").replace("]","");
         //regular runs with no mentions formatted as spans
-        result.push(<span onClick={this.onLinkClick} className="link">{match.replace("["," ").replace("]"," ")}</span>);
+        result.push(<span onClick={this.onLinkClick} className="link" id={match}>{match}</span>);
         result.push(<span className="run">{notMatches[i]}</span>);
         i++;
       });
-      result.push(<div className="section">{section.title.replace(titleReg,"")}</div>);
+      result.push(<div className="section"> {section.title.replace(titleReg,"")} </div>);
     });
     return result;
   },
 
-  onMove() {
-    this.props.onMove();
+  onMove(e) {
+    this.props.onMove(e.target.id);
   },
 
-  onLinkClick() {
-    this.onMove();
+  onLinkClick(e) {
+    this.onMove(e);
   },
 
 

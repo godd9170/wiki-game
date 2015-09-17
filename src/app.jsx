@@ -17,19 +17,21 @@ var App = React.createClass({
     return {
       content : null,
       title : null,
-      moves : -1
+      moves : 0
     };
   },
 
   onRandomPageSuccess(resp) {
 
     console.log(resp);
-    var title = resp.title;
+    var startTitle = resp.title;
+    var endTitle = resp.title2;
     var content = resp.content;
     var links = resp.links;
 
     this.setState({
-      title : title,
+      startTitle : startTitle,
+      endTitle : endTitle,
       links : links,
       content : content
     });
@@ -39,15 +41,42 @@ var App = React.createClass({
     console.log("ERROR: ", resp);
   },
 
-  onMove() {
-    var counter = this.state.moves++;
+  onArticlePageSuccess(resp) {
+
+    console.log('Article: ', resp);
+    var title = resp.title;
+    var content = resp.content;
+    var links = resp.links;
+
     this.setState({
-      moves : counter,
+      links : links,
+      content : content
     });
+  },
+
+  onArticlePageError(resp) {
+    console.log("ERROR: ", resp);
+  },
+
+  onMove(title) {
+    var counter = this.state.moves + 1;
+    this.setState({ moves : counter });
+    var data = JSON.stringify({ title: title });
+    //get the new article
+    var url = "/article";
+    $.ajax({
+        url: url,
+        method: 'POST',
+        data: data,
+        contentType: 'application/json; charset=utf-8',
+        success: this.onArticlePageSuccess,
+        error: this.onArticlePageError,
+    });
+    console.log("CALLED!!");
   },
  
   componentWillMount() {
-    var url = "/article";
+    var url = "/random";
 
     $.ajax({
         url: url,
@@ -60,12 +89,13 @@ var App = React.createClass({
 
   render() {
     var url = this.state.url;
-    var title = this.state.title;
+    var startTitle = this.state.startTitle;
+    var endTitle = this.state.endTitle;
 
     return (
       <div className="app">
         <Header />
-        <ScorePanel title={title} moves={this.state.moves}/>
+        <ScorePanel startTitle={startTitle} endTitle={endTitle} moves={this.state.moves}/>
         <ContentPanel onMove={this.onMove} content={this.state.content} links={this.state.links}/>
         <Footer />
       </div>

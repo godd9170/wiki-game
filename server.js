@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 var path = require('path');
 var express = require('express');
+var bodyParser = require('body-parser')
 var app = express();
 var Wiki = require('wikijs');
 
@@ -13,6 +14,9 @@ var config = {
 app.set('views', __dirname);
 app.set('view engine', 'ejs');
 
+// parse application/json
+app.use(bodyParser.json())
+
 ///routes
 app.get('/', function (req, res) {
   res.render('layout');
@@ -20,7 +24,7 @@ app.get('/', function (req, res) {
 
 
 //Give a random article name & content
-app.get('/article', function (req, res) {
+app.get('/random', function (req, res) {
   var article = {};
   var wiki = new Wiki();
   //Fetch a random article name
@@ -31,18 +35,43 @@ app.get('/article', function (req, res) {
     wiki.page(title).then(function(page) {
       page.content().then(function(content) {
         article['content'] = content;
-      
         //get links
         wiki.page(title).then(function(page) {
           page.links().then(function(links) {
             article['links'] = links;
-            res.json(article);
+            //Fetch a second random article name
+            wiki.random().then(function(random) {
+              var title2 = random[0];
+              article['title2'] = title2;
+              res.json(article);
+            });
           });
         });
       });
     });
   });
 });
+
+app.post('/article', function (req, res) {
+  var title = req.body.title;
+  console.log("TITLE: ", title);
+  var article = {};
+  var wiki = new Wiki();
+  wiki.page(title).then(function(page) {
+    page.content().then(function(content) {
+      article['content'] = content;
+      //get links
+      wiki.page(title).then(function(page) {
+        page.links().then(function(links) {
+          article['links'] = links;
+          res.json(article);
+        });
+      });
+    });
+  });
+});
+
+
 
 // start the server
 app.listen(config.port, function (err) {

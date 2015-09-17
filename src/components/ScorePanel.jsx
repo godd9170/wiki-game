@@ -43,7 +43,8 @@ module.exports = ScorePanel;
 var ScorePanel = React.createClass({
 
   propTypes: {
-    title: React.PropTypes.string,
+    startTitle: React.PropTypes.string,
+    endTitle: React.PropTypes.string,
     moves: React.PropTypes.number
   },
 
@@ -51,9 +52,9 @@ var ScorePanel = React.createClass({
     return (
       <div className="score-panel">
         <div className="wrapper">
-          <TopicPanel title={this.props.title}/>
+          <TopicPanel title={this.props.startTitle}/>
           <MoveCounter moves={this.props.moves}/>
-          <TopicPanel title="Forks" isRight={true}/>
+          <TopicPanel title={this.props.endTitle} isRight={true}/>
         </div>
       </div>
     );
