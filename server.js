@@ -19,7 +19,7 @@ app.get('/', function (req, res) {
 });
 
 
-//Give a random article name & html content
+//Give a random article name & content
 app.get('/article', function (req, res) {
   var article = {};
   var wiki = new Wiki();
@@ -27,12 +27,19 @@ app.get('/article', function (req, res) {
   wiki.random().then(function(random) {
     var title = random[0];
     article['title'] = title;
-    //Get the random article page
+    //Get the random article page content
     wiki.page(title).then(function(page) {
-        page.html().then(function(html) {
-            article['html'] = html;
+      page.content().then(function(content) {
+        article['content'] = content;
+      
+        //get links
+        wiki.page(title).then(function(page) {
+          page.links().then(function(links) {
+            article['links'] = links;
             res.json(article);
+          });
         });
+      });
     });
   });
 });

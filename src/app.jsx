@@ -2,7 +2,6 @@
 var React = require('react');
 var $ = require('jquery');
 var _ = require('lodash');
-var HtmlToReact = require('html-to-react');
 //components
 var Header = require('./components/Header');
 var ScorePanel = require('./components/ScorePanel');
@@ -26,15 +25,12 @@ var App = React.createClass({
 
     console.log(resp);
     var title = resp.title;
-
-    //create html div
-    var content = resp.html.replace(/(href)[^\s]*/g, 'class="wiki-link"'); //lose the hrefs
-    var div = '<div>';
-    var htmlToReactParser = new HtmlToReact.Parser(React);
-    content = htmlToReactParser.parse(div.concat(content.concat("</div>")));
+    var content = resp.content;
+    var links = resp.links;
 
     this.setState({
       title : title,
+      links : links,
       content : content
     });
   },
@@ -70,7 +66,7 @@ var App = React.createClass({
       <div className="app">
         <Header />
         <ScorePanel title={title} moves={this.state.moves}/>
-        <ContentPanel onMove={this.onMove} content={this.state.content} />
+        <ContentPanel onMove={this.onMove} content={this.state.content} links={this.state.links}/>
         <Footer />
       </div>
     );
