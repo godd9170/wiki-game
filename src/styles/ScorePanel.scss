@@ -12,6 +12,7 @@
 
     .topic {
       flex: 1;
+      padding: 7px 0;
 
       &.right {
         text-align: right;
@@ -19,6 +20,12 @@
       .topic-title {
         font-size: 25px;
         color: #fff;
+      }
+
+      .pending-text {
+        width: 20px;
+        height: 20px;
+        background: #56A5DD url(/assets/img/ajax-loader.gif) no-repeat center center;
       }
     }
 

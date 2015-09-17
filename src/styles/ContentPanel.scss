@@ -10,13 +10,28 @@
     margin: 0 auto;
     padding-top: 10px;
 
+    .article-title {
+      font-size: 1.7em;
+      text-align: center;
+      padding-bottom: 10px;
+    }
+
+    .loader-container {
+      margin: 0 auto;
+    }
+
     .section {
       font-size: 1.5em;
       padding: 10px 0;
     }
 
     .link {
-      color: red;
+      color: #0645ad;
+
+      &:hover {
+        text-decoration: underline;
+        cursor: pointer;
+      }
     }
   }
 }

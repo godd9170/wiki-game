@@ -14,6 +14,9 @@ var config = {
 app.set('views', __dirname);
 app.set('view engine', 'ejs');
 
+//static content
+app.use('/assets', express.static(__dirname + '/src/assets'));
+
 // parse application/json
 app.use(bodyParser.json())
 
@@ -54,8 +57,7 @@ app.get('/random', function (req, res) {
 
 app.post('/article', function (req, res) {
   var title = req.body.title;
-  console.log("TITLE: ", title);
-  var article = {};
+  var article = {title : title};
   var wiki = new Wiki();
   wiki.page(title).then(function(page) {
     page.content().then(function(content) {

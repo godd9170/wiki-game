@@ -23,17 +23,25 @@ var TopicPanel = React.createClass({
     isRight: React.PropTypes.bool /* justify right if right topic */
   },
 
-  render() {
-    let topicClasses = classNames(
-      'topic',
-      this.props.isRight ? 'right' : null
-    );
+  renderTopic() {
+    if (this.props.title) {
+      return <div className="topic-title">{this.props.title}</div>;
+    } else {
+      return <div className="text-loader"/>;
+    }
+  },
 
-    return (
-      <div className={topicClasses}>
-        <div className="topic-title">{this.props.title}</div>
-      </div>
+  render() { 
+    let topicClasses = classNames(
+        'topic',
+        this.props.isRight ? 'right' : null
     );
+    var topic = this.renderTopic();
+    return ( 
+      <div className={topicClasses}>
+        {topic}
+      </div>
+    ); 
   }
 
 });

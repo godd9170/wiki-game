@@ -8,7 +8,8 @@ var ContentPanel = React.createClass({
   propTypes: {
     content: React.PropTypes.string,
     links: React.PropTypes.array,
-    onMove: React.PropTypes.func
+    onMove: React.PropTypes.func,
+    title: React.PropTypes.string
   },
 
   //wrap square brackets around each link
@@ -47,28 +48,37 @@ var ContentPanel = React.createClass({
   },
 
   renderContent() {
-    var content = this.squareBracketify();
-    var sections = this.sectionify(content);
-    var result = [];
-    var titleReg = /=+/g;
-    sections.forEach(section => {
-      //split content into spans
-      const bracketReg = /\[(.*?)\]/gi;
-      let matches = section.content.match(bracketReg) || [];
-      section.content = section.content.replace(bracketReg, "<BREAK>");
-      let notMatches = section.content.split("<BREAK>") || [];
 
-      result.push(<span className="run">{notMatches.splice(0, 1)[0]}</span>);
-      var i = 0;
-      matches.forEach(match => {
-        var match = match.replace("[","").replace("]","");
-        //regular runs with no mentions formatted as spans
-        result.push(<span onClick={this.onLinkClick} className="link" id={match}>{match}</span>);
-        result.push(<span className="run">{notMatches[i]}</span>);
-        i++;
+    if (this.props.content) {
+      var content = this.squareBracketify();
+      var sections = this.sectionify(content);
+      var result = [];
+      var titleReg = /=+/g;
+      sections.forEach(section => {
+        //split content into spans
+        const bracketReg = /\[(.*?)\]/gi;
+        let matches = section.content.match(bracketReg) || [];
+        section.content = section.content.replace(bracketReg, "<BREAK>");
+        let notMatches = section.content.split("<BREAK>") || [];
+
+        result.push(<span className="run">{notMatches.splice(0, 1)[0]}</span>);
+        var i = 0;
+        matches.forEach(match => {
+          var match = match.replace("[","").replace("]","");
+          //regular runs with no mentions formatted as spans
+          result.push(<span onClick={this.onLinkClick} className="link" id={match}>{match}</span>);
+          result.push(<span className="run">{notMatches[i]}</span>);
+          i++;
+        });
+        result.push(<div className="section"> {section.title.replace(titleReg,"")} </div>);
       });
-      result.push(<div className="section"> {section.title.replace(titleReg,"")} </div>);
-    });
+    } else {
+      var result = (
+        <div className="loader-container">
+          <div className="loader">Loading...</div>
+        </div>
+        );
+    }
     return result;
   },
 
@@ -86,6 +96,7 @@ var ContentPanel = React.createClass({
     return (
       <div className="content-panel">
         <div className="wiki">
+          <div className="article-title">{this.props.title}</div>
           {content}
         </div>
       </div>

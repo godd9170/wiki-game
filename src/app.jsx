@@ -16,8 +16,9 @@ var App = React.createClass({
   getInitialState() {
     return {
       content : null,
-      title : null,
-      moves : 0
+      currentTitle : null,
+      moves : 0,
+      titleList : [],
     };
   },
 
@@ -28,12 +29,18 @@ var App = React.createClass({
     var endTitle = resp.title2;
     var content = resp.content;
     var links = resp.links;
+    var titleList = this.state.titleList;
+    //add to the title list
+    titleList.push(startTitle);
+    console.log("TitleLIST: ", titleList);
 
     this.setState({
       startTitle : startTitle,
       endTitle : endTitle,
+      currentTitle : startTitle,
       links : links,
-      content : content
+      content : content,
+      titleList : titleList
     });
   },
 
@@ -47,10 +54,16 @@ var App = React.createClass({
     var title = resp.title;
     var content = resp.content;
     var links = resp.links;
+    var titleList = this.state.titleList;
+    //add to the title list
+    titleList.push(title);
+    console.log("TitleLIST: ", titleList);
 
     this.setState({
+      currentTitle : title,
       links : links,
-      content : content
+      content : content,
+      titleList : titleList
     });
   },
 
@@ -60,7 +73,10 @@ var App = React.createClass({
 
   onMove(title) {
     var counter = this.state.moves + 1;
-    this.setState({ moves : counter });
+    this.setState({ 
+      moves : counter,
+      content : null //force spinner
+    });
     var data = JSON.stringify({ title: title });
     //get the new article
     var url = "/article";
@@ -72,7 +88,6 @@ var App = React.createClass({
         success: this.onArticlePageSuccess,
         error: this.onArticlePageError,
     });
-    console.log("CALLED!!");
   },
  
   componentWillMount() {
@@ -96,7 +111,11 @@ var App = React.createClass({
       <div className="app">
         <Header />
         <ScorePanel startTitle={startTitle} endTitle={endTitle} moves={this.state.moves}/>
-        <ContentPanel onMove={this.onMove} content={this.state.content} links={this.state.links}/>
+        <ContentPanel 
+          onMove={this.onMove} 
+          content={this.state.content} 
+          links={this.state.links}
+          title={this.state.currentTitle}/>
         <Footer />
       </div>
     );
