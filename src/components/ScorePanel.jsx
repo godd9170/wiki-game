@@ -2,7 +2,9 @@ var React = require('react');
 var classNames = require('classnames');
 require('../styles/ScorePanel.scss');   //stylings for component
 
+
 var MoveCounter = React.createClass({
+
   
   render() {
 
@@ -59,6 +61,11 @@ var ScorePanel = React.createClass({
   render() {
     return (
       <div className="score-panel">
+        <div className="logo-wrap">
+          <div className="logo">
+            <i className="wiki" />
+          </div>
+        </div>
         <div className="wrapper">
           <TopicPanel title={this.props.startTitle}/>
           <MoveCounter moves={this.props.moves}/>

@@ -6,6 +6,7 @@ var _ = require('lodash');
 var Header = require('./components/Header');
 var ScorePanel = require('./components/ScorePanel');
 var ContentPanel = require('./components/ContentPanel');
+var HistoryPanel = require('./components/HistoryPanel');
 var Footer = require('./components/Footer');
 
 //styles
@@ -57,7 +58,6 @@ var App = React.createClass({
     var titleList = this.state.titleList;
     //add to the title list
     titleList.push(title);
-    console.log("TitleLIST: ", titleList);
 
     this.setState({
       currentTitle : title,
@@ -71,9 +71,40 @@ var App = React.createClass({
     console.log("ERROR: ", resp);
   },
 
+  fetchHistory(title) {
+    var index = this.state.titleList.indexOf(title);
+    //lose everything in the title list array after the title
+    var keep = true;
+    var titleList = this.state.titleList.filter(entry => {
+        if (entry === title) {
+            keep = false;
+        }
+        return keep;
+    });
+
+    this.setState({ 
+      currentTitle : title,
+      moves : index, //set to point in list
+      content : null, //force spinner
+      titleList : titleList
+    });
+    var data = JSON.stringify({ title: title });
+    //get the new article
+    var url = "/article";
+    $.ajax({
+        url: url,
+        method: 'POST',
+        data: data,
+        contentType: 'application/json; charset=utf-8',
+        success: this.onArticlePageSuccess,
+        error: this.onArticlePageError,
+    }); 
+  },
+
   onMove(title) {
     var counter = this.state.moves + 1;
     this.setState({ 
+      currentTitle : title,
       moves : counter,
       content : null //force spinner
     });
@@ -109,7 +140,7 @@ var App = React.createClass({
 
     return (
       <div className="app">
-        <Header />
+        <HistoryPanel titleList={this.state.titleList} fetchHistory={this.fetchHistory}/>
         <ScorePanel startTitle={startTitle} endTitle={endTitle} moves={this.state.moves}/>
         <ContentPanel 
           onMove={this.onMove} 

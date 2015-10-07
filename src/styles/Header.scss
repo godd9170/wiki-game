@@ -1,6 +1,8 @@
 .header {
   background-color: #a7d7f9;
   width: 100%;
+  position: fixed;
+  z-index: 3;
 
   .header-wrap {
     max-width: 980px;
