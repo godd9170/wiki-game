@@ -6,7 +6,7 @@ var app = express();
 var Wiki = require('wikijs');
 
 var config = {
-  port: 8000
+  port: process.env.PORT
 };
 
 ///views
