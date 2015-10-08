@@ -10,8 +10,8 @@
   },
   "private": false,
   "scripts": {
-    "start": "HOT_LOAD=true node hotLoadServer.js",
-    "build": "HOT_LOAD=false webpack --progress --colors",
+    "watch": "HOT_LOAD=true node hotLoadServer.js",
+    "start": "HOT_LOAD=false webpack --progress --colors",
     "prod": "REACT_ENV=beta webpack --progress --colors"
   },
   "devDependencies": {
