@@ -99,14 +99,14 @@ var ContentPanel = React.createClass({
     this.onMove(e);
   },
 
-
   render() {
     var content = this.renderContent();
     return (
       <div className="content-panel">
         <div className="wiki">
           <div className="article-title">{this.props.title}</div>
-          {content}
+            <SearchBar setQuery={this.setQuery} />
+            {content}
         </div>
       </div>
     );
