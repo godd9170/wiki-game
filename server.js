@@ -34,24 +34,24 @@ app.get('/random', function (req, res) {
   wiki.random().then(function(random) {
     var title = random[0];
     article['title'] = title;
-    //Get the random article page content
-    wiki.page(title).then(function(page) {
-      page.content().then(function(content) {
-        article['content'] = content;
-        //get links
-        wiki.page(title).then(function(page) {
-          page.links().then(function(links) {
-            article['links'] = links;
-            //Fetch a second random article name
-            wiki.random().then(function(random) {
-              var title2 = random[0];
-              article['title2'] = title2;
-              res.json(article);
+      //get links
+      wiki.page(title).then(function(page) {
+        page.links(true, 99999).then(function(links) {
+          article['links'] = links;
+          //Fetch a second random article name
+          wiki.random().then(function(random) {
+            var title2 = random[0];
+            article['title2'] = title2;
+            //get article 2's summary
+            wiki.page(title2).then(function(page) {
+              page.summary().then(function(summary) {
+                article['summary'] = summary;
+                res.json(article);
+              });
             });
           });
         });
       });
-    });
   });
 });
 
@@ -64,7 +64,7 @@ app.post('/article', function (req, res) {
       article['content'] = content;
       //get links
       wiki.page(title).then(function(page) {
-        page.links().then(function(links) {
+        page.links(true, 99999).then(function(links) {
           article['links'] = links;
           res.json(article);
         });

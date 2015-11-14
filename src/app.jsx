@@ -53,7 +53,6 @@ var App = React.createClass({
 
     console.log('Article: ', resp);
     var title = resp.title;
-    var content = resp.content;
     var links = resp.links;
     var titleList = this.state.titleList;
     //add to the title list
@@ -62,7 +61,6 @@ var App = React.createClass({
     this.setState({
       currentTitle : title,
       links : links,
-      content : content,
       titleList : titleList
     });
   },
@@ -85,7 +83,7 @@ var App = React.createClass({
     this.setState({ 
       currentTitle : title,
       moves : index, //set to point in list
-      content : null, //force spinner
+      links: null, //force spinner
       titleList : titleList
     });
     var data = JSON.stringify({ title: title });
@@ -106,7 +104,7 @@ var App = React.createClass({
     this.setState({ 
       currentTitle : title,
       moves : counter,
-      content : null //force spinner
+      links : null //force spinner
     });
     var data = JSON.stringify({ title: title });
     //get the new article
