@@ -1,0 +1,28 @@
+@font-face {
+  font-family: 'wikigame';
+  src:url('/assets/fonts/wikigame.eot?ss3pgr');
+  src:url('/assets/fonts/wikigame.eot?ss3pgr#iefix') format('embedded-opentype'),
+    url('/assets/fonts/wikigame.ttf?ss3pgr') format('truetype'),
+    url('/assets/fonts/wikigame.woff?ss3pgr') format('woff'),
+    url('/assets/fonts/wikigame.svg?ss3pgr#wikigame') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  font-family: 'wikigame';
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-filter:before {
+  content: "\e900";
+}
