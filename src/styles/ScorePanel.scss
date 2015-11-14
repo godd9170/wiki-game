@@ -44,9 +44,11 @@
     .topic {
       flex: 1;
       padding: 7px 0;
+      position: relative;
 
       &.right {
         text-align: right;
+        cursor: help;
       }
       .topic-title {
         font-size: 25px;
@@ -58,6 +60,44 @@
         height: 20px;
         background: #56A5DD url(/assets/img/ajax-loader.gif) no-repeat center center;
       }
+
+      // .summary-popover {
+      //   position: absolute;
+      //   padding: 5px;
+      //   text-align: left;
+      //   color: #fff;
+      //   background-color: #000;
+      // }
+
+      .summary-popover {
+        position: absolute;
+        top: 50px;
+        padding: 10px;
+        font-family: sans-serif;
+        color: #fff;
+        font-weight: 100;
+        line-height: 1.2em;
+        text-align: left;
+        background: rgba(0,0,0,0.7);
+        -webkit-border-radius: 10px;
+        -moz-border-radius: 10px;
+        border-radius: 10px;
+
+        &:after {
+          content: '';
+          position: absolute;
+          border-style: solid;
+          border-width: 0 15px 15px;
+          border-color: rgba(0,0,0,0.7) transparent;
+          display: block;
+          width: 0;
+          z-index: 1;
+          margin-left: -15px;
+          top: -15px;
+          left: 92%;
+        }
+      }
+
     }
 
 

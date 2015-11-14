@@ -18,21 +18,52 @@
       padding-bottom: 10px;
     }
 
-    .loader-container {
-      margin: 0 auto;
-    }
+    .search-bar {
+      margin: 5px 0;
+      position: relative;
 
-    .section {
-      font-size: 1.5em;
-      padding: 10px 0;
+      .icon-filter {
+        position: absolute;
+        font-size: 2em;
+        top: 15px;
+        left: 12px;
+        color: #ccc;
+
+        &.active {
+          color: #56A5DD;
+        }
+      }
+      
+      input {
+        border: 1px solid #ccc;
+        appearance: none;
+        box-shadow: none;
+        border-radius: 4px;
+        width: 100%;
+        font-size: 2em;
+        padding: 10px 10px 10px 60px;
+
+        &:focus {
+          outline: none;
+          border: 1px solid #56A5DD;
+        }
+      } 
     }
 
     .link {
-      color: #0645ad;
+      color: #56A5DD;
+      margin: 10px;
+      padding: 5px;
+      float: left;
+      font-size: 2em;
+      border-radius: 4px;
+      border: 1px #ccc solid;
+      background-color: #fff;
 
       &:hover {
-        text-decoration: underline;
         cursor: pointer;
+        color: #0645ad;
+        border: 1px #0645ad solid;
       }
     }
   }

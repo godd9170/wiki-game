@@ -20,16 +20,42 @@ var MoveCounter = React.createClass({
 
 var TopicPanel = React.createClass({
 
+  getInitialState() {
+    return { showSummaryPopover : false };
+  },
+
   propTypes: {
     title: React.PropTypes.string,
-    isRight: React.PropTypes.bool /* justify right if right topic */
+    isRight: React.PropTypes.bool, /* justify right if right topic */
+    summary: React.PropTypes.string,
   },
+
+  showSummaryPopover() {
+    this.setState({ showSummaryPopover : true });
+  },
+
+  hideSummaryPopover() {
+    this.setState({ showSummaryPopover : false });
+  },
+
 
   renderTopic() {
     if (this.props.title) {
       return <div className="topic-title">{this.props.title}</div>;
     } else {
       return <div className="text-loader"/>;
+    }
+  },
+
+  generateSummaryPopover() {
+    if (this.state.showSummaryPopover && !!this.props.summary) {
+      return (
+        <div className="summary-popover">
+          {this.props.summary}
+        </div>
+        );
+    } else {
+      return null
     }
   },
 
@@ -40,8 +66,9 @@ var TopicPanel = React.createClass({
     );
     var topic = this.renderTopic();
     return ( 
-      <div className={topicClasses}>
+      <div onMouseOver={this.showSummaryPopover} onMouseLeave={this.hideSummaryPopover}  className={topicClasses}>
         {topic}
+        {this.generateSummaryPopover()}
       </div>
     ); 
   }
@@ -52,11 +79,15 @@ module.exports = ScorePanel;
 
 var ScorePanel = React.createClass({
 
+
+
   propTypes: {
     startTitle: React.PropTypes.string,
     endTitle: React.PropTypes.string,
-    moves: React.PropTypes.number
+    moves: React.PropTypes.number,
+    endTitleSummary: React.PropTypes.string,
   },
+
 
   render() {
     return (
@@ -69,7 +100,7 @@ var ScorePanel = React.createClass({
         <div className="wrapper">
           <TopicPanel title={this.props.startTitle}/>
           <MoveCounter moves={this.props.moves}/>
-          <TopicPanel title={this.props.endTitle} isRight={true}/>
+          <TopicPanel title={this.props.endTitle} summary={this.props.endTitleSummary} isRight={true} />
         </div>
       </div>
     );

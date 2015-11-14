@@ -28,19 +28,21 @@ var App = React.createClass({
     console.log(resp);
     var startTitle = resp.title;
     var endTitle = resp.title2;
-    var content = resp.content;
     var links = resp.links;
+    var endTitleSummary = resp.summary;
     var titleList = this.state.titleList;
     //add to the title list
     titleList.push(startTitle);
     console.log("TitleLIST: ", titleList);
+    console.log('endTitleSummary: ', endTitleSummary);
+    console.log('links: ', links);
 
     this.setState({
       startTitle : startTitle,
       endTitle : endTitle,
+      endTitleSummary : endTitleSummary,
       currentTitle : startTitle,
       links : links,
-      content : content,
       titleList : titleList
     });
   },
@@ -135,14 +137,14 @@ var App = React.createClass({
     var url = this.state.url;
     var startTitle = this.state.startTitle;
     var endTitle = this.state.endTitle;
+    var endTitleSummary = this.state.endTitleSummary;
 
     return (
       <div className="app">
         <HistoryPanel titleList={this.state.titleList} fetchHistory={this.fetchHistory}/>
-        <ScorePanel startTitle={startTitle} endTitle={endTitle} moves={this.state.moves}/>
+        <ScorePanel startTitle={startTitle} endTitle={endTitle} endTitleSummary={endTitleSummary} moves={this.state.moves}/>
         <ContentPanel 
-          onMove={this.onMove} 
-          content={this.state.content} 
+          onMove={this.onMove}
           links={this.state.links}
           title={this.state.currentTitle}/>
         <Footer />
