@@ -1,0 +1,46 @@
+.winner{
+  flex: 1;
+  font-family: sans-serif;
+  margin: 50px 0 0 200px;
+  padding-top: 50px;
+  background-color: #56A5DD;
+  color: #fff;
+  text-align: center;
+
+  .congrats {
+    text-align: center;
+
+    .congrats-subtitle {
+      font-size: 3.5em;
+      padding: 15px 0;
+    }
+
+    .congrats-article-title {
+      font-size: 3em;
+      padding: 15px 0;
+    }
+    .congrats-h3 {
+      font-size: 1.5em;
+    }
+
+    .link-path {
+      padding: 0 10px;
+      .arrow {
+        color: #fff;
+        vertical-align: super;
+        font-size: 1.2em;
+      }
+      .link {
+        color: #56A5DD;
+        margin: 10px;
+        display: inline-block;
+        padding: 5px;
+        float: center;
+        font-size: 2em;
+        border-radius: 4px;
+        border: 1px #ccc solid;
+        background-color: #fff;
+      }
+    }
+  }
+}
