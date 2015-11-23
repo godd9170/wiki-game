@@ -6,7 +6,7 @@
   "author": "Henry Goddard <godd9170@mylaurier.ca>",
   "license": "MIT",
   "engines": {
-    "node": "0.12.2"
+    "node": "0.10.31"
   },
   "private": false,
   "scripts": {
