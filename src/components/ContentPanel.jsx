@@ -30,6 +30,12 @@ var SearchBar = React.createClass({
     this.props.setQuery(query);
   },
 
+  clearQuery() {
+    console.log("CLEARED");
+    this.setState({ query : '' });
+    this.props.setQuery('');
+  },
+
   render() {
     let searchClasses = classNames(
         'icon-filter',
@@ -39,7 +45,7 @@ var SearchBar = React.createClass({
     return (
       <div className="search-bar">
       <i className={searchClasses} />
-        <input onFocus={this.setSearchActive} onBlur={this.clearSeachActive} onChange={this.updateQuery} />
+        <input ref="input" onFocus={this.setSearchActive} onBlur={this.clearSeachActive} onChange={this.updateQuery} />
       </div>
     );
   }
@@ -68,7 +74,7 @@ var ContentPanel = React.createClass({
   filterLinks() {
     var links = this.props.links;
     if (!!links) {
-      return links.filter(l => {return l.indexOf(this.state.query) > -1})
+      return links.filter(l => {return l.toLowerCase().indexOf(this.state.query.toLowerCase()) > -1})
     } else {
       return []
     }
@@ -97,6 +103,10 @@ var ContentPanel = React.createClass({
 
   onLinkClick(e) {
     this.onMove(e);
+    console.log("SRCHBR: ", this.refs.SearchBar);
+    this.refs.SearchBar.clearQuery();
+    this.refs.SearchBar.refs.input.getDOMNode().value = '';
+    console.log("input", this.refs.SearchBar.refs.input);
   },
 
   render() {
@@ -105,7 +115,7 @@ var ContentPanel = React.createClass({
       <div className="content-panel">
         <div className="wiki">
           <div className="article-title">{this.props.title}</div>
-            <SearchBar setQuery={this.setQuery} />
+            <SearchBar ref="SearchBar" setQuery={this.setQuery} />
             {content}
         </div>
       </div>

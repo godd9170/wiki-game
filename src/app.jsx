@@ -7,6 +7,7 @@ var Header = require('./components/Header');
 var ScorePanel = require('./components/ScorePanel');
 var ContentPanel = require('./components/ContentPanel');
 var HistoryPanel = require('./components/HistoryPanel');
+var WinnerPanel = require('./components/WinnerPanel');
 var Footer = require('./components/Footer');
 
 //styles
@@ -20,31 +21,37 @@ var App = React.createClass({
       currentTitle : null,
       moves : 0,
       titleList : [],
+      winner : false,
     };
   },
 
   onRandomPageSuccess(resp) {
 
     console.log(resp);
-    var startTitle = resp.title;
-    var endTitle = resp.title2;
-    var links = resp.links;
-    var endTitleSummary = resp.summary;
-    var titleList = this.state.titleList;
-    //add to the title list
-    titleList.push(startTitle);
-    console.log("TitleLIST: ", titleList);
-    console.log('endTitleSummary: ', endTitleSummary);
-    console.log('links: ', links);
 
-    this.setState({
-      startTitle : startTitle,
-      endTitle : endTitle,
-      endTitleSummary : endTitleSummary,
-      currentTitle : startTitle,
-      links : links,
-      titleList : titleList
-    });
+    if (resp.success) {
+      var startTitle = resp.start_article.title;
+      var endTitle = resp.end_article.title;
+      var endId = resp.end_article.id;
+      var links = resp.links;
+      var endTitleSummary = resp.summary;
+      var titleList = this.state.titleList;
+      //add to the title list
+      titleList.push(startTitle);
+
+      this.setState({
+        startTitle : startTitle,
+        endTitle : endTitle,
+        endId : endId,
+        endTitleSummary : endTitleSummary,
+        currentTitle : startTitle,
+        links : links,
+        titleList : titleList
+      });
+    } else {
+      console.log("TOO AMBIGUOUS TRY AGAIN!");
+      this.onPageLoad();
+    }
   },
 
   onRandomPageError(resp) {
@@ -54,10 +61,11 @@ var App = React.createClass({
   onArticlePageSuccess(resp) {
 
     console.log('Article: ', resp);
+    console.log('Links Length: ', resp.links.length)
     var title = resp.title;
     var links = resp.links;
     var titleList = this.state.titleList;
-    //add to the title list
+    //add to the title list if new article
     titleList.push(title);
 
     this.setState({
@@ -71,6 +79,20 @@ var App = React.createClass({
     console.log("ERROR: ", resp);
   },
 
+  onHistoryPageSuccess(resp) {
+
+    console.log('Article: ', resp);
+    console.log('Links Length: ', resp.links.length)
+    var title = resp.title;
+    var links = resp.links;
+
+    this.setState({
+      currentTitle : title,
+      links : links
+    });
+  },
+
+
   fetchHistory(title) {
     var index = this.state.titleList.indexOf(title);
     //lose everything in the title list array after the title
@@ -78,6 +100,8 @@ var App = React.createClass({
     var titleList = this.state.titleList.filter(entry => {
         if (entry === title) {
             keep = false;
+            //one last time for the actual article.
+            return true
         }
         return keep;
     });
@@ -89,16 +113,50 @@ var App = React.createClass({
       titleList : titleList
     });
     var data = JSON.stringify({ title: title });
-    //get the new article
-    var url = "/article";
+    var url = "/links";
     $.ajax({
         url: url,
         method: 'POST',
         data: data,
         contentType: 'application/json; charset=utf-8',
-        success: this.onArticlePageSuccess,
+        success: this.onHistoryPageSuccess,
         error: this.onArticlePageError,
     }); 
+  },
+
+  getId(title) {
+    var data = JSON.stringify({ title: title });
+    var url = "/id";
+    $.ajax({
+        url: url,
+        method: 'POST',
+        data: data,
+        contentType: 'application/json; charset=utf-8',
+        success: this.onPageSuccess,
+        error: this.onArticlePageError,
+    }); 
+  },
+
+  onPageSuccess(resp) {
+    console.log("NEW ID: ", resp.id);
+    console.log("NEW TITLE: ", resp);
+    console.log("END ID: ", this.state.endId);
+    if (parseInt(resp.id) === parseInt(this.state.endId)) {
+      //enter win mode
+      this.setState({ winner : true });
+    } else {
+      var data = JSON.stringify({ title: resp.title });
+      //get the new article
+      var url = "/links";
+      $.ajax({
+          url: url,
+          method: 'POST',
+          data: data,
+          contentType: 'application/json; charset=utf-8',
+          success: this.onArticlePageSuccess,
+          error: this.onArticlePageError,
+      });
+    }
   },
 
   onMove(title) {
@@ -108,29 +166,21 @@ var App = React.createClass({
       moves : counter,
       links : null //force spinner
     });
-    var data = JSON.stringify({ title: title });
-    //get the new article
-    var url = "/article";
-    $.ajax({
-        url: url,
-        method: 'POST',
-        data: data,
-        contentType: 'application/json; charset=utf-8',
-        success: this.onArticlePageSuccess,
-        error: this.onArticlePageError,
-    });
+    this.getId(title);
   },
- 
-  componentWillMount() {
-    var url = "/random";
 
+  onPageLoad() {
+    var url = "/random";
     $.ajax({
         url: url,
         method: 'GET',
         success: this.onRandomPageSuccess,
         error: this.onRandomPageError,
       });
-
+  },
+ 
+  componentWillMount() {
+    this.onPageLoad()
   },
 
   render() {
@@ -139,14 +189,20 @@ var App = React.createClass({
     var endTitle = this.state.endTitle;
     var endTitleSummary = this.state.endTitleSummary;
 
+    var content = !this.state.winner ? <ContentPanel onMove={this.onMove} 
+                                        links={this.state.links} 
+                                        title={this.state.currentTitle} /> : 
+                                        <WinnerPanel 
+                                        titleList={this.state.titleList} 
+                                        startTitle={this.state.startTitle}
+                                        endTitle={this.state.endTitle}
+                                        moves={this.state.moves} />;
+
     return (
       <div className="app">
         <HistoryPanel titleList={this.state.titleList} fetchHistory={this.fetchHistory}/>
         <ScorePanel startTitle={startTitle} endTitle={endTitle} endTitleSummary={endTitleSummary} moves={this.state.moves}/>
-        <ContentPanel 
-          onMove={this.onMove}
-          links={this.state.links}
-          title={this.state.currentTitle}/>
+        {content}
         <Footer />
       </div>
     );

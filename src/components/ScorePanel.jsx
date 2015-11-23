@@ -1,5 +1,6 @@
 var React = require('react');
 var classNames = require('classnames');
+var $ = require('jquery');
 require('../styles/ScorePanel.scss');   //stylings for component
 
 

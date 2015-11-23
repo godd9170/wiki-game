@@ -3,11 +3,15 @@ var path = require('path');
 var express = require('express');
 var bodyParser = require('body-parser')
 var app = express();
-var Wiki = require('wikijs');
+var helpers2 = require('./helpers2.js')
+var request = require('request');
+const MIN_BACKLINK_THRESHOLD = 300;
 
 var config = {
   port: 4242
 };
+
+
 
 ///views
 
@@ -25,53 +29,108 @@ app.get('/', function (req, res) {
   res.render('layout');
 });
 
-
-//Give a random article name & content
-app.get('/random', function (req, res) {
-  var article = {};
-  var wiki = new Wiki();
-  //Fetch a random article name
-  wiki.random().then(function(random) {
-    var title = random[0];
-    article['title'] = title;
-      //get links
-      wiki.page(title).then(function(page) {
-        page.links(true, 99999).then(function(links) {
-          article['links'] = links;
-          //Fetch a second random article name
-          wiki.random().then(function(random) {
-            var title2 = random[0];
-            article['title2'] = title2;
-            //get article 2's summary
-            wiki.page(title2).then(function(page) {
-              page.summary().then(function(summary) {
-                article['summary'] = summary;
-                res.json(article);
-              });
-            });
-          });
-        });
-      });
+app.post('/id', function (req, res) {
+  var title = req.body.title;
+  var response = {title : title};
+  //url to get the topic's id
+  var id_url = "https://en.wikipedia.org/w/api.php?action=query&format=json&titles=" + encodeURIComponent(title);
+  // request module is used to process the yql url and return the results in JSON format
+  request(id_url, function(err, resp, body) {
+    body = JSON.parse(body);
+    // logic used to compare search results with the input from user
+    response['id'] = Object.keys(body.query.pages)[0];
+    res.json(response);
   });
 });
 
-app.post('/article', function (req, res) {
-  var title = req.body.title;
-  var article = {title : title};
-  var wiki = new Wiki();
-  wiki.page(title).then(function(page) {
-    page.content().then(function(content) {
-      article['content'] = content;
-      //get links
-      wiki.page(title).then(function(page) {
-        page.links(true, 99999).then(function(links) {
-          article['links'] = links;
-          res.json(article);
+
+app.get('/random', function (req, res) {
+  var response = {}
+
+  //Get the inital two articles
+  var random_url = "https://en.wikipedia.org/w/api.php?action=query&list=random&format=json&rnnamespace=0&rnlimit=1"
+  request(random_url, function(err, resp, body) {
+    body = JSON.parse(body);
+    response['start_article'] = body.query.random[0];
+    var links_url = "https://en.wikipedia.org/w/api.php?action=parse&format=json&pageid="+ encodeURIComponent(body.query.random[0].id) + "&prop=links";
+    request(links_url, function(err, resp, body) {
+      body = JSON.parse(body);
+      var links = [];
+      body.parse.links.forEach( function(link) {
+        if (link.ns === 0) {
+          links.push(link["*"]);
+        }
+      });
+      response['links'] = links;
+      helpers2.getRandomWikiTopic().then( function (parsedBody) {
+        //console.log("Got new random article id: ", parsedBody.query.random[0]['id']);
+        var id = parsedBody.query.random[0]['id'];
+        response['end_article'] = parsedBody.query.random[0];
+        helpers2.getBLCount(id).then( function (parsedBody) {
+          var blcount = parsedBody['query']['backlinks'].length;
+          if (blcount >  MIN_BACKLINK_THRESHOLD) {
+            var end_id = response['end_article']['id'];
+            links_url = "https://en.wikipedia.org/w/api.php?action=parse&format=json&pageid="+ encodeURIComponent(end_id) + "&prop=links";
+            request(links_url, function(err, resp, body) {
+              body = JSON.parse(body);
+              var end_id = response['end_article'].id;
+              summary_url = "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&explaintext=&pageids=" + encodeURIComponent(end_id);
+              request(summary_url, function(err, resp, body) {
+                body = JSON.parse(body);
+                response['summary'] = body.query.pages[end_id]['extract'];
+                response['success'] = true;
+                res.json(response);
+              });
+            });
+          } else {
+            console.log("YOU HERE SON?");
+            response['message'] = "Article requested too vague.. try again fool";
+            response['success'] = false;
+            res.json(response);
+          }
         });
       });
     });
   });
 });
+
+
+app.post('/links', function (req, res) {
+  var title = req.body.title;
+  var response = {title : title};
+
+  //url to get the topic's id
+  var id_url = "https://en.wikipedia.org/w/api.php?action=query&format=json&titles=" + encodeURIComponent(title);
+  // request module is used to process the yql url and return the results in JSON format
+  request(id_url, function(err, resp, body) {
+    body = JSON.parse(body);
+    // logic used to compare search results with the input from user
+    var article_id  = Object.keys(body.query.pages)[0];
+    var links_url = "https://en.wikipedia.org/w/api.php?action=parse&format=json&pageid="+ encodeURIComponent(article_id) + "&prop=links";
+    request(links_url, function(err, resp, body) {
+      body = JSON.parse(body);
+      var links = [];
+
+      if (!!body.parse.links) {
+        body.parse.links.forEach( function(link) {
+          if (link.ns === 0) {
+            links.push(link["*"]);
+          }
+        });
+        //send away the article and it's links
+        response['links'] = links;
+        res.json(response);
+      } else {
+        console.log("No links for Article, Send the Bad News: ", body.parse.links);
+        res.status(500).send('No articles for that link bro!');
+        return
+      }
+
+   });
+
+ });
+});
+
 
 
 

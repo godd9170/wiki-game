@@ -110,7 +110,7 @@ module.exports = {
   entry: entry,
   devtool: IS_PROD ? 'cheap-source-map' : 'eval',
   output: {
-    path: pwd + '/build',
+    path: pwd + '/src/assets/js',
     filename: '[name].entry.js',
     publicPath: HOT_LOAD ? 'http://0.0.0.0:3000/build' : undefined,
   },
