@@ -1,4 +1,5 @@
 var React = require('react');
+var $ = require('jquery');
 var classNames = require('classnames');
 require('../styles/ContentPanel.scss');   //stylings for component
 
@@ -68,7 +69,11 @@ var ContentPanel = React.createClass({
   propTypes: {
     links: React.PropTypes.array,
     onMove: React.PropTypes.func,
-    title: React.PropTypes.string
+    title: React.PropTypes.string,
+    pendingTitle: React.PropTypes.string,
+    backlinks: React.PropTypes.number,
+    onArticleSearchAbort: React.PropTypes.func,
+    keepSearching: React.PropTypes.bool
   },
 
   filterLinks() {
@@ -82,18 +87,38 @@ var ContentPanel = React.createClass({
 
   renderContent() {
 
-    if (this.props.links) {
+    if (!this.props.keepSearching) {
       var links = this.filterLinks();
-      var result = links.map(link => {
-        return (<div className="link" id={link} onClick={this.onLinkClick}>{link}</div> )     
+      var linkElements = links.map(link => {
+        return (
+          <div className="link" id={link} onClick={this.onLinkClick}>{link}</div> )     
       });
-    } else {
       var result = (
-        <div className="loader-container">
-          <div className="loader">Loading...</div>
+        <div className="wiki">
+          <div className="article-title">{this.props.title}</div>
+          <SearchBar ref="SearchBar" setQuery={this.setQuery} />
+          {linkElements}
         </div>
       );
-    }
+    } else  { //if (!!this.props.pendingTitle)
+      var backlinks = (!!this.props.backlinks && this.props.backlinks) === 500 ? '500+' : this.props.backlinks;
+      var backlinksMessage = !!this.props.backlinks ? `${backlinks} Backlinks` : null; 
+      var result = (
+        <div className="wiki">
+          <div className="loader-container">
+            <div className="loader-message-title">Wikipedia covers some pretty obscure topics!</div>
+            <div className="loader-message">To make reaching your destination possible, only articles with a minimum of 300</div>
+            <div className="loader-message">referrring links are considered. I&#39;m searching for a suitable target article now.</div> 
+            <div className="loader"></div>
+            <div className="loader-text-h1">{this.props.pendingTitle}</div>
+            <div className="loader-text-h2">{backlinksMessage}</div>
+            <div className="choose-button">
+              <button onClick={this.props.onArticleSearchAbort}>Fuck It I&#39;ll do this one</button>
+            </div>
+          </div>
+        </div>
+      );
+    } 
     return result;
   },
 
@@ -113,11 +138,7 @@ var ContentPanel = React.createClass({
     var content = this.renderContent();
     return (
       <div className="content-panel">
-        <div className="wiki">
-          <div className="article-title">{this.props.title}</div>
-            <SearchBar ref="SearchBar" setQuery={this.setQuery} />
-            {content}
-        </div>
+        {content}
       </div>
     );
   }

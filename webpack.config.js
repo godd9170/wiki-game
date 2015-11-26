@@ -112,7 +112,7 @@ module.exports = {
   output: {
     path: pwd + '/src/assets/js',
     filename: '[name].entry.js',
-    publicPath: HOT_LOAD ? 'http://0.0.0.0:3000/build' : undefined,
+    publicPath: HOT_LOAD ? 'http://0.0.0.0:3000/src/assets/js' : undefined,
   },
   module: {
     preLoaders: preLoaders,

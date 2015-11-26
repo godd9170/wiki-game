@@ -80,6 +80,12 @@ module.exports = ScorePanel;
 
 var ScorePanel = React.createClass({
 
+  getInitialState() {
+    return {
+      logoMouseover : false 
+    };
+  },
+
 
 
   propTypes: {
@@ -87,15 +93,35 @@ var ScorePanel = React.createClass({
     endTitle: React.PropTypes.string,
     moves: React.PropTypes.number,
     endTitleSummary: React.PropTypes.string,
+    onPlayAgain: React.PropTypes.func
+  },
+
+  onLogoMouseEnter() {
+    this.setState({
+      logoMouseover : true 
+    });
+  },
+
+  onLogoMouseLeave() {
+    this.setState({
+      logoMouseover : false 
+    });
+  },
+
+  onRefreshClick() {
+    this.props.onPlayAgain();
   },
 
 
   render() {
+    let iconClasses = classNames(
+        this.state.logoMouseover ? 'icon-refresh active' : 'icon-wikipedia'
+    );
     return (
       <div className="score-panel">
-        <div className="logo-wrap">
+        <div className="logo-wrap" onMouseOver={this.onLogoMouseEnter} onMouseOut={this.onLogoMouseLeave} onClick={this.props.onPlayAgain}>
           <div className="logo">
-            <i className="wiki" />
+            <i className={iconClasses} />
           </div>
         </div>
         <div className="wrapper">

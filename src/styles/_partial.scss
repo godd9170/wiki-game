@@ -1,0 +1,23 @@
+button {
+  padding: 5px 10px;
+  background-color: $primary;
+  -moz-border-radius: 28px;
+  -webkit-border-radius: 28px;
+  border-radius: 28px;
+  border: none;
+  display: inline-block;
+  cursor: pointer;
+  color: $white;
+  font-size: 17px;
+  padding: 16px 31px;
+  text-decoration: none;
+  outline:none;
+  &:hover {
+    background-color: $primary-active;
+  }
+  &:active {
+    outline: none;
+    position: relative;
+    top: 1px;
+  }
+}

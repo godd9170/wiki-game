@@ -22,36 +22,54 @@ var App = React.createClass({
       moves : 0,
       titleList : [],
       winner : false,
+      pendingTitle : null,
+      backlinks : null,
+      keepSearching : true,
     };
   },
 
   onRandomPageSuccess(resp) {
-
-    console.log(resp);
-
-    if (resp.success) {
+    //There is a chance that the user could have aborted midway through
+    // API call... if that's the case, don't overwrite the state.
+    if (this.state.keepSearching) {
       var startTitle = resp.start_article.title;
       var endTitle = resp.end_article.title;
       var endId = resp.end_article.id;
       var links = resp.links;
       var endTitleSummary = resp.summary;
       var titleList = this.state.titleList;
-      //add to the title list
-      titleList.push(startTitle);
+      var backlinks = resp.backlinks;
+      var success = resp.success;
 
       this.setState({
+        backlinks : backlinks,
         startTitle : startTitle,
         endTitle : endTitle,
         endId : endId,
         endTitleSummary : endTitleSummary,
         currentTitle : startTitle,
         links : links,
-        titleList : titleList
+        titleList : titleList,
+        keepSearching : !success
+      }, function() { 
+        //If the API call has returned an article above the Threshold
+        // then do not load another page
+        if (this.state.keepSearching) {
+          this.onPageLoad();
+        }
       });
-    } else {
-      console.log("TOO AMBIGUOUS TRY AGAIN!");
-      this.onPageLoad();
     }
+  },
+
+  onArticleSearchAbort() {
+    //add to the title list
+    var titleList = this.state.titleList;
+    var startTitle = this.state.startTitle;
+    titleList.push(startTitle);
+    this.setState({ 
+      keepSearching : false,
+      titleList : titleList
+    });
   },
 
   onRandomPageError(resp) {
@@ -178,6 +196,21 @@ var App = React.createClass({
         error: this.onRandomPageError,
       });
   },
+
+  onPlayAgain() {
+    this.setState({
+      content : null,
+      currentTitle : null,
+      moves : 0,
+      titleList : [],
+      winner : false,
+      pendingTitle : null,
+      backlinks : null,
+      keepSearching : true, 
+    });
+
+    this.onPageLoad();
+  },
  
   componentWillMount() {
     this.onPageLoad()
@@ -191,17 +224,21 @@ var App = React.createClass({
 
     var content = !this.state.winner ? <ContentPanel onMove={this.onMove} 
                                         links={this.state.links} 
-                                        title={this.state.currentTitle} /> : 
+                                        onArticleSearchAbort={this.onArticleSearchAbort}
+                                        keepSearching={this.state.keepSearching}
+                                        title={this.state.currentTitle}
+                                        pendingTitle={this.state.endTitle}
+                                        backlinks={this.state.backlinks} /> : 
                                         <WinnerPanel 
-                                        titleList={this.state.titleList} 
+                                        onPlayAgain={this.onPlayAgain}
                                         startTitle={this.state.startTitle}
                                         endTitle={this.state.endTitle}
                                         moves={this.state.moves} />;
 
     return (
       <div className="app">
-        <HistoryPanel titleList={this.state.titleList} fetchHistory={this.fetchHistory}/>
-        <ScorePanel startTitle={startTitle} endTitle={endTitle} endTitleSummary={endTitleSummary} moves={this.state.moves}/>
+        <HistoryPanel titleList={this.state.titleList} fetchHistory={this.fetchHistory} disabled={this.state.winner}/>
+        <ScorePanel onPlayAgain={this.onPlayAgain} startTitle={startTitle} endTitle={endTitle} endTitleSummary={endTitleSummary} moves={this.state.moves}/>
         {content}
         <Footer />
       </div>

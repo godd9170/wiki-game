@@ -31,11 +31,14 @@ var HistoryPanel = React.createClass({
   propTypes: {
     titleList : React.PropTypes.array,
     fetchHistory : React.PropTypes.func,
+    disabled : React.PropTypes.bool
   },
 
   onHistorySelect(e) {
-    var title = e.target.id;
-    this.props.fetchHistory(title);
+    if (!this.props.disabled) {
+      var title = e.target.id;
+      this.props.fetchHistory(title);
+    }
   },
 
   render() {
