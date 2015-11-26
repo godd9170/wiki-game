@@ -1,10 +1,13 @@
+@import 'variables';
+
 .score-panel {
-  background: #56A5DD;
+  background: $primary;
   width: 100%;
   font-family: "Linux Libertine",Georgia,Times,serif;
-  position: fixed;
   z-index: 3;
   display: flex;
+  height: 100px;
+  position: fixed;
 
   .logo-wrap {
     position: absolute;
@@ -12,23 +15,20 @@
     left: 0.4em;
     .logo {
       border-radius: 50%;
-      background-color: #fff;
-      border: #56A5DD solid 2px;
-      color: #56A5DD;
+      background-color: $white;
+      border: $primary solid 2px;
+      color: $primary;
       width: 50px;
       height: 50px;
-      i.wiki {
+      cursor: pointer;
+      i {
         position: absolute;
-        top: .6em;
-        left: .7em;
-        &:before {
-          font-family: Times New Roman,Times,serif;
-          font-weight: 400;
-          font-style: normal;
-          font-size: 30px;
-          content: "VV";
-          letter-spacing: -.45em;
-          margin-right: .5em;
+        top: .4em;
+        left: .4em;
+        font-size: 30px;
+
+        &.active {
+          color: $secondary;
         }
       }
     }
@@ -58,7 +58,7 @@
       .pending-text {
         width: 20px;
         height: 20px;
-        background: #56A5DD url(/assets/img/ajax-loader.gif) no-repeat center center;
+        background: $primary url(/assets/img/ajax-loader.gif) no-repeat center center;
       }
 
       // .summary-popover {
@@ -74,7 +74,7 @@
         top: 50px;
         padding: 10px;
         font-family: sans-serif;
-        color: #fff;
+        color: $white;
         font-weight: 100;
         line-height: 1.2em;
         text-align: left;
@@ -113,7 +113,7 @@
       .moves-title {
         text-align: center;
         display: inline-block;
-        color: #fff;
+        color: $white;
       }
     }
   }

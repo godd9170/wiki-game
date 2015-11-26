@@ -6,11 +6,7 @@ var WinnerPanel = React.createClass({
 
 
   render() {
-    var {moves, startTitle, endTitle, titleList} = this.props;
-    if (!!endTitle) { titleList.push(endTitle ); }
-    var linkPath = titleList.map(title => {
-      return <span><span className="link">{title}</span><span className="arrow">&#10137;</span></span>
-    });
+    var {moves, startTitle, endTitle} = this.props;
     return (
       <div className="winner">
         <div className="congrats">
@@ -19,7 +15,9 @@ var WinnerPanel = React.createClass({
           <div className="congrats-article-title">{startTitle}</div>
           <div className="congrats-h3"> with </div>
           <div className="congrats-article-title">{endTitle}</div>
-          <div className="link-path">{linkPath}</div>
+          <div className="play-again">
+            <button onClick={this.props.onPlayAgain}>Again!</button>
+          </div>
         </div>
       </div>
     );

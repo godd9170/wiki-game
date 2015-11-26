@@ -1,7 +1,9 @@
+@import 'variables';
+
 .footer {
-  background-color: #fff;
+  background-color: $white;
   font-size: 10px;
-  color: #ccc;
+  color: $light-grey;
   text-align: right;
   padding: 0 10px;
   max-width: 980px;

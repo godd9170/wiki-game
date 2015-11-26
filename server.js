@@ -68,26 +68,20 @@ app.get('/random', function (req, res) {
         response['end_article'] = parsedBody.query.random[0];
         helpers2.getBLCount(id).then( function (parsedBody) {
           var blcount = parsedBody['query']['backlinks'].length;
-          if (blcount >  MIN_BACKLINK_THRESHOLD) {
-            var end_id = response['end_article']['id'];
-            links_url = "https://en.wikipedia.org/w/api.php?action=parse&format=json&pageid="+ encodeURIComponent(end_id) + "&prop=links";
-            request(links_url, function(err, resp, body) {
+          response['backlinks'] = blcount;
+          response['success'] = (blcount >  MIN_BACKLINK_THRESHOLD);
+          var end_id = response['end_article']['id'];
+          links_url = "https://en.wikipedia.org/w/api.php?action=parse&format=json&pageid="+ encodeURIComponent(end_id) + "&prop=links";
+          request(links_url, function(err, resp, body) {
+            body = JSON.parse(body);
+            var end_id = response['end_article'].id;
+            summary_url = "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&explaintext=&pageids=" + encodeURIComponent(end_id);
+            request(summary_url, function(err, resp, body) {
               body = JSON.parse(body);
-              var end_id = response['end_article'].id;
-              summary_url = "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&explaintext=&pageids=" + encodeURIComponent(end_id);
-              request(summary_url, function(err, resp, body) {
-                body = JSON.parse(body);
-                response['summary'] = body.query.pages[end_id]['extract'];
-                response['success'] = true;
-                res.json(response);
-              });
+              response['summary'] = body.query.pages[end_id]['extract'];
+              res.json(response);
             });
-          } else {
-            console.log("YOU HERE SON?");
-            response['message'] = "Article requested too vague.. try again fool";
-            response['success'] = false;
-            res.json(response);
-          }
+          });
         });
       });
     });

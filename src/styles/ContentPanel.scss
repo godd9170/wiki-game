@@ -1,3 +1,6 @@
+@import 'variables';
+@import 'partial';
+
 .content-panel {
   background-color: #fff;
   flex: 1;
@@ -11,7 +14,42 @@
     margin: 0 auto;
     max-width: 880px;
     align-items: center;
+    height: 100%;
 
+
+    //loading stuff
+    .loader-container {
+      display: flex;
+      flex-direction: column;
+      height: 70%;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+
+      .loader-message-title {
+        margin: 5px 0;
+        font-size: 2em;
+      }
+      .loader-message {
+        font-size: 0.9em;
+        color: $grey;
+      }
+      .loader-text-h1 {
+        font-size: 1em;
+        height: 1em;
+        margin: 5px 0;
+      }
+      .loader-text-h2 {
+        font-size: 0.8em;
+        height: 1em;
+        color: $grey;
+      }
+      .choose-button {
+        margin: 10px 0;
+      }
+    }
+
+    //loaded stuff
     .article-title {
       font-size: 2em;
       text-align: center;

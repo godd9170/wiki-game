@@ -1,10 +1,12 @@
+@import 'variables';
+
 .sidebar {
   width: 200px;
   top: 0;
   left: 0;
   bottom: 0;
   position: fixed;
-  background: #56A5DD;
+  background: $primary;
   z-index: 2;
 }
 
@@ -15,7 +17,7 @@
   bottom: 0;
   padding-top: 150px;
   position: absolute;
-  background: #56A5DD;
+  background: $primary;
   z-index: -1;
 
   .timeline {
@@ -33,7 +35,7 @@
       margin-left: 9px;
       width: 6px;
       height: 100%;
-      background: #fff;
+      background: $white;
       z-index: -2;
       content: " ";
       position: absolute;
@@ -42,7 +44,7 @@
     ul {
       list-style: none;
       font-family: "Linux Libertine",Georgia,Times,serif;
-      color: #fff;
+      color: $white;
 
       li {
         padding: 5px 0;
@@ -53,19 +55,19 @@
           margin-top: 4px;
           width: 12px;
           height: 12px;
-          background: #fff;
+          background: $white;
           border-radius: 50%;
         }
         &:last-child {
           font-size: 20px;
 
           &:before {
-            background: yellow;
+            background: $secondary;
           }
         }
         &:hover {
           cursor: pointer;
-          color: yellow;
+          color: $secondary;
         }
       }
     }
