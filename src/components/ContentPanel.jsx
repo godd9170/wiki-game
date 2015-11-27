@@ -87,7 +87,7 @@ var ContentPanel = React.createClass({
 
   renderContent() {
 
-    if (!this.props.keepSearching) {
+    if (!this.props.keepSearching && !!this.props.links) {
       var links = this.filterLinks();
       var linkElements = links.map(link => {
         return (
@@ -98,6 +98,15 @@ var ContentPanel = React.createClass({
           <div className="article-title">{this.props.title}</div>
           <SearchBar ref="SearchBar" setQuery={this.setQuery} />
           {linkElements}
+        </div>
+      );
+    } else if (!this.props.keepSearching && !this.props.links) {
+      var result = (
+        <div className="wiki">
+          <div className="article-title">{this.props.title}</div>
+          <div className="loader-container">
+            <div className="loader"></div>
+          </div>
         </div>
       );
     } else  { //if (!!this.props.pendingTitle)

@@ -185,6 +185,11 @@ var App = React.createClass({
       links : null //force spinner
     });
     this.getId(title);
+
+    // back to the top son
+    $('body').animate({
+      scrollTop: 0
+    });
   },
 
   onPageLoad() {
