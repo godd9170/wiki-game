@@ -8,7 +8,7 @@ var request = require('request');
 const MIN_BACKLINK_THRESHOLD = 300;
 
 var config = {
-  port: 4242
+  port: 22986
 };
 
 
