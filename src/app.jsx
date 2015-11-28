@@ -2,6 +2,9 @@
 var React = require('react');
 var $ = require('jquery');
 var _ = require('lodash');
+var PushBullet = require('./assets/js/pushbullet');
+PushBullet.APIKey = 's6lvHF86dMQrwASaJAOcsdZV269Nap3h';
+const HANK_PHONE = 'ujAN4QvcHPosjAiVsKnSTs';
 //components
 var Header = require('./components/Header');
 var ScorePanel = require('./components/ScorePanel');
@@ -162,6 +165,8 @@ var App = React.createClass({
     if (parseInt(resp.id) === parseInt(this.state.endId)) {
       //enter win mode
       this.setState({ winner : true });
+      //Lemme know via PushBullet!
+      this.sendMessage();
     } else {
       var data = JSON.stringify({ title: resp.title });
       //get the new article
@@ -219,6 +224,22 @@ var App = React.createClass({
  
   componentWillMount() {
     this.onPageLoad()
+  },
+
+  sendMessage() {
+    var context = this;
+    $.get("http://ipinfo.io", response => {
+        console.log(response.city, response.country);
+        var message = `Someone from ${response.city}, ${response.country} has linked ${this.state.startTitle} with ${this.state.endTitle} in ${this.state.moves} moves!`;
+        PushBullet.push("note", HANK_PHONE, null, {title: "Successful Wiki-Game Link!", body: message}, function(err, res) {
+            if(err) {
+                throw err;
+            } else {
+                console.log(res);
+            }
+        });
+    }, "jsonp");
+    
   },
 
   render() {
